@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 350px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        small {
+            color: red;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+
+        .link-text {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Signup</h2>
+
+    <form id="signupForm">
+
+        <label>Name:</label>
+        <input type="text" id="name" required>
+        <small id="nameError"></small>
+
+        <label>Email:</label>
+        <input type="email" id="email" required>
+        <small id="emailError"></small>
+
+        <label>Password:</label>
+        <input type="password" id="password" required>
+        <small id="passwordError"></small>
+
+        <label>Confirm Password:</label>
+        <input type="password" id="confirmPassword" required>
+        <small id="confirmError"></small>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p class="link-text">
+        Already have an account? <a href="login.html">Login</a>
+    </p>
+
+</div>
+
+<script>
+document.getElementById("signupForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let password = document.getElementById("password").value;
+    let confirm = document.getElementById("confirmPassword").value;
+
+    let isValid = true;
+
+  
+    document.getElementById("passwordError").innerText = "";
+    document.getElementById("confirmError").innerText = "";
+
+    
+    if (password.length < 8) {
+        document.getElementById("passwordError").innerText = "Password must be at least 8 characters";
+        isValid = false;
+    }
+
+    
+    if (password !== confirm) {
+        document.getElementById("confirmError").innerText = "Passwords do not match";
+        isValid = false;
+    }
+
+    if (isValid) {
+        alert("Account Created Successfully!");
+    }
+});
+</script>
+
+</body>
+</html>
