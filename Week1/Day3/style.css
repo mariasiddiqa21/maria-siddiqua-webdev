@@ -11,14 +11,14 @@ body {
   color: #111;
 }
 
-/* CONTAINER */
+
 .container {
   width: 90%;
   max-width: 1200px;
   margin: auto;
 }
 
-/* NAVBAR */
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -38,7 +38,7 @@ body {
   list-style: none;
 }
 
-/* BUTTONS */
+
 .btn-outline {
   padding: 10px 20px;
   color: green;
@@ -58,7 +58,7 @@ body {
   cursor: pointer;
 }
 
-/* HERO */
+
 .hero {
   display: flex;
   justify-content: space-between;
@@ -89,7 +89,7 @@ body {
   
 }
 
-/* CLIENTS */
+
 .clients {
   display: flex;
   justify-content: space-between;
@@ -116,7 +116,7 @@ body {
   margin: 0 auto;
 }
 
-/* HEADER */
+
 .services-header {
   display: flex;
   justify-content: space-between;
@@ -130,7 +130,7 @@ body {
   gap: 25px;
 }
 
-/* CARD BASE */
+
 .service-card {
   display: flex;
   justify-content: space-between;
@@ -148,18 +148,18 @@ body {
   transition: 0.3s ease;
 }
 
-/* HOVER */
+
 .service-card:hover {
   transform: translateY(-6px);
 }
 
-/* LEFT SIDE */
+
 .card-left h3 {
   font-size: 22px;
   font-weight: 600;
 }
 
-/* HIGHLIGHT TEXT */
+
 .card-left span {
   background: #b9ff66;
   padding: 4px 10px;
@@ -168,7 +168,7 @@ body {
   margin-bottom: 5px;
 }
 
-/* LEARN MORE */
+
 .learn {
   display: flex;
   align-items: center;
@@ -187,7 +187,7 @@ body {
   border-radius: 50%;
 }
 
-/* WHITE VERSION */
+
 .icon.white {
   background: white;
   color: black;
@@ -197,13 +197,13 @@ body {
   color: white;
 }
 
-/* IMAGE */
+
 .card-img {
   width: 140px;
   object-fit: contain;
 }
 
-/* BACKGROUNDS */
+
 .gray {
   background: #f3f3f3;
 }
