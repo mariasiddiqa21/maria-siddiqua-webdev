@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Registration Form</title>
+
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+
+  
+  background: url("https://images.unsplash.com/photo-1555066931-4365d14bab8c") no-repeat center center/cover;
+}
+
+
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    h2 { text-align: center; }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    input:invalid { border-color: red; }
+    input:valid { border-color: green; }
+
+    .error {
+      color: red;
+      font-size: 12px;
+      display: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+
+    #preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: none;
+      margin: 10px auto;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+    }
+
+    .btn-row{
+      display:flex;
+      gap:10px;
+      margin-top:10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Register</h2>
+
+  <input type="text" id="name" placeholder="Full Name" required>
+  <input type="email" id="email" placeholder="Email" required>
+
+  <input type="password" id="password" placeholder="Password">
+  <div class="error" id="passError">Password must be 8+ chars with number & symbol</div>
+
+  <input type="text" id="phone" placeholder="Phone Number">
+  <input type="date" id="dob">
+  <div class="error" id="ageError">Must be 18+</div>
+
+  <select id="country">
+    <option value="">Select Country</option>
+    <option value="Pakistan">Pakistan</option>
+    <option value="USA">USA</option>
+  </select>
+
+  <select id="city">
+    <option value="">Select City</option>
+  </select>
+
+  <input type="file" id="image" accept="image/*">
+  <img id="preview" />
+
+  <button id="submit" disabled>Submit</button>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content" id="summary"></div>
+</div>
+
+<script>
+const name = document.getElementById("name");
+const email = document.getElementById("email");
+const phone = document.getElementById("phone");
+
+const formFields = document.querySelectorAll("input, select");
+const submitBtn = document.getElementById("submit");
+
+const cityData = {
+  Pakistan: ["Lahore", "Karachi", "Islamabad"],
+  USA: ["New York", "Los Angeles", "Chicago"]
+};
+
+const country = document.getElementById("country");
+const city = document.getElementById("city");
+
+country.addEventListener("change", () => {
+  city.innerHTML = '<option value="">Select City</option>';
+  cityData[country.value]?.forEach(c => {
+    const option = document.createElement("option");
+    option.value = c;
+    option.textContent = c;
+    city.appendChild(option);
+  });
+});
+
+const password = document.getElementById("password");
+const passError = document.getElementById("passError");
+
+password.addEventListener("input", () => {
+  const regex = /^(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+  passError.style.display = regex.test(password.value) ? "none" : "block";
+  checkForm();
+});
+
+const dob = document.getElementById("dob");
+const ageError = document.getElementById("ageError");
+
+dob.addEventListener("input", () => {
+  const age = new Date().getFullYear() - new Date(dob.value).getFullYear();
+  ageError.style.display = age >= 18 ? "none" : "block";
+  checkForm();
+});
+
+const image = document.getElementById("image");
+const preview = document.getElementById("preview");
+
+image.addEventListener("change", () => {
+  const file = image.files[0];
+  if (file) {
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+  }
+});
+
+function checkForm() {
+  let valid = true;
+  formFields.forEach(field => {
+    if (!field.value) valid = false;
+  });
+
+  if (passError.style.display === "block" || ageError.style.display === "block") {
+    valid = false;
+  }
+
+  submitBtn.disabled = !valid;
+}
+
+formFields.forEach(f => f.addEventListener("input", checkForm));
+
+submitBtn.addEventListener("click", () => {
+  const data = {
+    name: name.value,
+    email: email.value,
+    phone: phone.value,
+    country: country.value,
+    city: city.value
+  };
+
+  localStorage.setItem("user", JSON.stringify(data));
+
+  document.getElementById("summary").innerHTML = `
+    <h3>Summary</h3>
+    <p>Name: ${data.name}</p>
+    <p>Email: ${data.email}</p>
+    <p>Phone: ${data.phone}</p>
+    <p>Country: ${data.country}</p>
+    <p>City: ${data.city}</p>
+
+    <div class="btn-row">
+      <button onclick="goBack()">Back</button>
+      <button onclick="goNext()">Next</button>
+    </div>
+  `;
+
+  document.getElementById("modal").style.display = "flex";
+});
+
+function goBack(){
+  document.getElementById("modal").style.display = "none";
+}
+
+function goNext(){
+  document.getElementById("modal").style.display = "none";
+  window.location.href = "#";
+}
+
+window.onload = () => {
+  const saved = JSON.parse(localStorage.getItem("user"));
+  if (saved) {
+    name.value = saved.name;
+    email.value = saved.email;
+    phone.value = saved.phone;
+    country.value = saved.country;
+
+    country.dispatchEvent(new Event("change"));
+    setTimeout(() => city.value = saved.city, 100);
+  }
+};
+</script>
+
+</body>
+</html>
