@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Treasure Hunt Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+    }
+
+    .game-container {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      width: 320px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 80%;
+      padding: 10px;
+      margin: 15px 0;
+      border: none;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #00c6ff;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0072ff;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .attempts {
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .play-again {
+      display: none;
+      background: #28a745;
+    }
+
+    .play-again:hover {
+      background: #1e7e34;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-container">
+    <h1>🏴‍☠️ Treasure Hunt</h1>
+    <p>Guess a number between 1 and 100</p>
+
+    <input type="number" id="guessInput" placeholder="Enter your guess">
+
+    <br>
+    <button id="searchBtn">Search</button>
+    <button id="playAgainBtn" class="play-again">Play Again</button>
+
+    <div class="message" id="message"></div>
+    <div class="attempts" id="attempts"></div>
+  </div>
+
+  <script>
+    let treasureNumber;
+    let attemptsLeft;
+    let gameOver;
+
+    const input = document.getElementById("guessInput");
+    const message = document.getElementById("message");
+    const attemptsDisplay = document.getElementById("attempts");
+    const searchBtn = document.getElementById("searchBtn");
+    const playAgainBtn = document.getElementById("playAgainBtn");
+
+    
+    function startGame() {
+      treasureNumber = Math.floor(Math.random() * 100) + 1;
+      attemptsLeft = 7;
+      gameOver = false;
+
+      message.textContent = "";
+      attemptsDisplay.textContent = "Attempts Left: " + attemptsLeft;
+      input.value = "";
+      input.disabled = false;
+      searchBtn.disabled = false;
+      playAgainBtn.style.display = "none";
+
+      console.log("Treasure Number:", treasureNumber); 
+    }
+
+    
+    searchBtn.addEventListener("click", function () {
+      if (gameOver) return;
+
+      let guess = Number(input.value);
+
+      if (!guess || guess < 1 || guess > 100) {
+        message.textContent = "Enter a valid number (1-100)";
+        return;
+      }
+
+      
+      if (guess > treasureNumber) {
+        message.textContent = "Too Far Ahead 🚀";
+      } else if (guess < treasureNumber) {
+        message.textContent = "Too Far Behind 🐢";
+      } else {
+        message.textContent = "🎉 Treasure Found!";
+        endGame();
+        return;
+      }
+
+      
+      attemptsLeft--;
+      attemptsDisplay.textContent = "Attempts Left: " + attemptsLeft;
+
+      
+      if (attemptsLeft === 0) {
+        message.textContent = "💀 Game Over!";
+        endGame();
+      }
+
+      input.value = "";
+    });
+
+    
+    function endGame() {
+      gameOver = true;
+      input.disabled = true;
+      searchBtn.disabled = true;
+      playAgainBtn.style.display = "inline-block";
+    }
+
+    
+    playAgainBtn.addEventListener("click", startGame);
+
+    
+    startGame();
+  </script>
+
+</body>
+</html>
