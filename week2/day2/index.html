@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Analysis Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px 5px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    pre {
+      background: #111;
+      color: #0f0;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🚀 Data Analysis Dashboard</h1>
+
+  <div class="container">
+
+    <div class="card">
+      <h2>Ride Sharing Analysis</h2>
+      <button onclick="runDriverAnalysis()">Analyze Drivers</button>
+      <pre id="driverOutput"></pre>
+    </div>
+
+    <div class="card">
+      <h2>Project Analysis</h2>
+      <button onclick="runProjectAnalysis()">Analyze Projects</button>
+      <pre id="projectOutput"></pre>
+    </div>
+
+  </div>
+
+  <script>
+    
+
+    const drivers = [
+      {
+        driverId: 1,
+        name: "Ali",
+        rides: [
+          { distance: 10, fare: 500, rating: 4.8, completed: true },
+          { distance: 8, fare: 400, rating: 4.6, completed: true },
+          { distance: 6, fare: 300, rating: 4.7, completed: true },
+          { distance: 5, fare: 200, rating: 4.9, completed: true },
+          { distance: 12, fare: 600, rating: 5.0, completed: true }
+        ]
+      },
+      {
+        driverId: 2,
+        name: "Ahmed",
+        rides: [
+          { distance: 5, fare: 200, rating: 4.0, completed: false },
+          { distance: 7, fare: 300, rating: 4.2, completed: false }
+        ]
+      }
+    ];
+
+    const projects = [
+      {
+        projectName: "Website",
+        budget: 10000,
+        employees: [
+          {
+            empId: 1,
+            name: "Sara",
+            tasks: [
+              { taskName: "Design", hoursWorked: 10, status: "completed" },
+              { taskName: "Testing", hoursWorked: 5, status: "pending" }
+            ]
+          },
+          {
+            empId: 2,
+            name: "John",
+            tasks: [
+              { taskName: "Backend", hoursWorked: 15, status: "completed" }
+            ]
+          }
+        ]
+      },
+      {
+        projectName: "Mobile App",
+        budget: 15000,
+        employees: [
+          {
+            empId: 1,
+            name: "Sara",
+            tasks: [
+              { taskName: "UI", hoursWorked: 8, status: "completed" }
+            ]
+          },
+          {
+            empId: 3,
+            name: "Mike",
+            tasks: [
+              { taskName: "API", hoursWorked: 0, status: "pending" }
+            ]
+          }
+        ]
+      }
+    ];
+
+    
+    function analyzeDrivers(drivers) {
+      let highestEarningDriver = null;
+      let maxEarnings = 0;
+      let qualifiedDrivers = [];
+      let incompleteDrivers = [];
+
+      const stats = drivers.map(driver => {
+        let earnings = 0;
+        let ratingSum = 0;
+        let count = 0;
+        let allIncomplete = true;
+
+        driver.rides.forEach(r => {
+          if (r.completed) {
+            earnings += r.fare;
+            ratingSum += r.rating;
+            count++;
+            allIncomplete = false;
+          }
+        });
+
+        let avg = count ? ratingSum / count : 0;
+
+        if (earnings > maxEarnings) {
+          maxEarnings = earnings;
+          highestEarningDriver = driver.name;
+        }
+
+        if (count >= 5 && avg > 4.5) {
+          qualifiedDrivers.push(driver.name);
+        }
+
+        if (allIncomplete) {
+          incompleteDrivers.push(driver.name);
+        }
+
+        return {
+          name: driver.name,
+          earnings,
+          avgRating: avg.toFixed(2),
+          completedRides: count
+        };
+      });
+
+      return {
+        stats,
+        highestEarningDriver,
+        qualifiedDrivers,
+        incompleteDrivers
+      };
+    }
+
+    function runDriverAnalysis() {
+      const result = analyzeDrivers(drivers);
+      document.getElementById("driverOutput").textContent =
+        JSON.stringify(result, null, 2);
+    }
+
+    
+
+    function analyzeProjects(projects) {
+      let maxHours = 0;
+      let mostHardworkingEmployee = null;
+      let projectsWithIssues = [];
+      let empMap = {};
+
+      const stats = projects.map(project => {
+        let totalHours = 0;
+
+        project.employees.forEach(emp => {
+          let empHours = 0;
+          let hasCompleted = false;
+
+          emp.tasks.forEach(task => {
+            if (task.status === "completed") {
+              empHours += task.hoursWorked;
+              hasCompleted = true;
+            }
+          });
+
+          totalHours += empHours;
+
+          if (empHours > maxHours) {
+            maxHours = empHours;
+            mostHardworkingEmployee = emp.name;
+          }
+
+          if (!hasCompleted) {
+            if (!projectsWithIssues.includes(project.projectName)) {
+              projectsWithIssues.push(project.projectName);
+            }
+          }
+
+          if (!empMap[emp.empId]) {
+            empMap[emp.empId] = { name: emp.name, count: 0 };
+          }
+          empMap[emp.empId].count++;
+        });
+
+        return {
+          projectName: project.projectName,
+          totalCost: totalHours * 10
+        };
+      });
+
+      const multiProjectEmployees = Object.values(empMap)
+        .filter(e => e.count > 1)
+        .map(e => e.name);
+
+      return {
+        stats,
+        mostHardworkingEmployee,
+        projectsWithIssues,
+        multiProjectEmployees
+      };
+    }
+
+    function runProjectAnalysis() {
+      const result = analyzeProjects(projects);
+      document.getElementById("projectOutput").textContent =
+        JSON.stringify(result, null, 2);
+    }
+
+  </script>
+
+</body>
+</html>
