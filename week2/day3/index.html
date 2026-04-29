@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Employee Dashboard</title>
+
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #eef2f3, #dfe9f3);
+  }
+
+  h1 {
+    text-align: center;
+    margin: 20px 0;
+    color: #333;
+  }
+
+  #search {
+    display: block;
+    margin: 20px auto;
+    padding: 12px;
+    width: 320px;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  }
+
+  #users-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: 0.3s;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .special {
+    border-left: 5px solid #ff4d4d;
+  }
+
+  .card h3 {
+    margin: 0;
+    color: #333;
+  }
+
+  .card p {
+    margin: 5px 0;
+    color: #666;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border: none;
+    background: #4a90e2;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  button:hover {
+    background: #357abd;
+  }
+
+  #message {
+    text-align: center;
+    font-weight: bold;
+    color: red;
+  }
+
+  /* MODAL (DETAIL CARD) */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 350px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease;
+  }
+
+  .modal-content h2 {
+    margin-top: 0;
+  }
+
+  .close {
+    float: right;
+    cursor: pointer;
+    font-size: 18px;
+    color: red;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+</style>
+</head>
+
+<body>
+
+<h1>Employee Dashboard</h1>
+
+<input type="text" id="search" placeholder="Search by username or email...">
+
+<div id="message"></div>
+
+<div id="users-container"></div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" id="closeBtn">✖</span>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const container = document.getElementById("users-container");
+const searchInput = document.getElementById("search");
+const message = document.getElementById("message");
+
+const modal = document.getElementById("modal");
+const modalBody = document.getElementById("modal-body");
+const closeBtn = document.getElementById("closeBtn");
+
+let usersData = [];
+
+// Fetch users
+async function fetchUsers() {
+  try {
+    const res = await fetch("https://jsonplaceholder.typicode.com/users");
+
+    if (!res.ok) throw new Error();
+
+    const data = await res.json();
+    processUsers(data);
+
+  } catch {
+    message.textContent = "Failed to fetch users";
+  }
+}
+
+// Filter + Sort
+function processUsers(data) {
+  usersData = data
+    .filter(user => parseFloat(user.address.geo.lat) < 0)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  displayUsers(usersData);
+}
+
+// Display users
+function displayUsers(users) {
+  container.innerHTML = "";
+
+  if (users.length === 0) {
+    message.textContent = "No users found";
+    return;
+  }
+
+  message.textContent = "";
+
+  users.forEach(user => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    if (user.address.zipcode.startsWith("5")) {
+      card.classList.add("special");
+    }
+
+    card.innerHTML = `
+      <h3>${user.name}</h3>
+      <p>${user.email}</p>
+      <p>${user.address.city}</p>
+      <button>Show Details</button>
+    `;
+
+    card.querySelector("button").addEventListener("click", () => {
+      openModal(user);
+    });
+
+    container.appendChild(card);
+  });
+}
+
+// Open Modal
+function openModal(user) {
+  modalBody.innerHTML = `
+    <h2>${user.name}</h2>
+    <p><strong>Email:</strong> ${user.email}</p>
+    <p><strong>Street:</strong> ${user.address.street}</p>
+    <p><strong>Suite:</strong> ${user.address.suite}</p>
+    <p><strong>City:</strong> ${user.address.city}</p>
+    <p><strong>Company:</strong> ${user.company.catchPhrase}</p>
+  `;
+  modal.style.display = "flex";
+}
+
+// Close Modal
+closeBtn.onclick = () => modal.style.display = "none";
+window.onclick = (e) => {
+  if (e.target === modal) modal.style.display = "none";
+};
+
+// Search
+searchInput.addEventListener("input", (e) => {
+  const value = e.target.value.toLowerCase();
+
+  const filtered = usersData.filter(user =>
+    user.username.toLowerCase().includes(value) ||
+    user.email.toLowerCase().includes(value)
+  );
+
+  displayUsers(filtered);
+});
+
+// Init
+fetchUsers();
+</script>
+
+</body>
+</html>
