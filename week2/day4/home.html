@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ShopHub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="loadProducts()">
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2 class="logo">ShopHub</h2>
+
+  <div class="nav-links">
+    <a href="home.html">Home</a>
+
+    <a href="cart.html" class="cart-link">
+      Cart
+      <span id="cart-count">0</span>
+    </a>
+
+    <button onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Welcome to ShopHub</h1>
+  <p>Discover our amazing products</p>
+</div>
+
+<!-- PRODUCTS -->
+<div class="grid" id="products"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

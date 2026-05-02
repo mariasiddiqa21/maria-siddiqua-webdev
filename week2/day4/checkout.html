@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Checkout</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f6f8;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      color: #2563eb;
+      font-weight: bold;
+    }
+
+    /* MAIN CONTAINER */
+    .container {
+      max-width: 1100px;
+      margin: 50px auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
+      padding: 0 20px;
+    }
+
+    /* CARD */
+    .card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    /* INPUTS */
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #2563eb;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* BUTTON */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #1e4ed8;
+      transform: translateY(-1px);
+    }
+
+    /* SUMMARY */
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      font-size: 15px;
+    }
+
+    hr {
+      margin: 15px 0;
+      border: none;
+      border-top: 1px solid #eee;
+    }
+
+    .total {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    /* EMPTY STATE */
+    .empty {
+      color: gray;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body onload="loadCheckout()">
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2 class="logo">ShopHub</h2>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="card">
+    <h2>Shipping Information</h2>
+
+    <input id="cname" placeholder="Full Name">
+    <textarea id="caddress" placeholder="Shipping Address"></textarea>
+    <input id="cphone" placeholder="Phone Number">
+
+    <button class="btn" onclick="placeOrder()">Place Order</button>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="card">
+    <h2>Order Summary</h2>
+
+    <div id="summary"></div>
+
+    <hr>
+
+    <div class="summary-item total">
+      <span>Total</span>
+      <span id="grandTotal">$0</span>
+    </div>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
